@@ -1,5 +1,0 @@
-robyn
-sqlmodel
-
-# dev dependencies
-pytest
