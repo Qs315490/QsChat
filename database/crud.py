@@ -1,15 +1,15 @@
 from sqlmodel import select
-from database.models import *
+from database import models
 from database.db import get_session
-from utils.exception import *
+from utils import exception as err
 
 
-def add_user(user: Users):
-    if user.id is not None:
+def add_user(user: models.users):
+    if user.email is not None:
         try:
-            back = get_user(user.id)
-            raise UserAlreadyExists()
-        except UserNotFound:
+            _ = get_user(email=user.email)
+            raise err.UserAlreadyExists()
+        except err.UserNotFound:
             ...
 
     with get_session() as session:
@@ -26,7 +26,7 @@ def del_user(user_id: int):
         session.commit()
 
 
-def edit_user(user: UsersUpdate):
+def edit_user(user: models.usersUpdate):
     back = get_user(user.id)
     tmp = back.sqlmodel_update(user.model_dump(exclude_unset=True))
     with get_session() as session:
@@ -36,9 +36,16 @@ def edit_user(user: UsersUpdate):
     return tmp
 
 
-def get_user(user_id: int):
+def get_user(user_id: int | None = None, email: str | None = None):
+    if user_id is None and email is None:
+        raise err.UserNotFound()
     with get_session() as session:
-        back = session.get(Users, user_id)
+        back = None
+        if user_id is not None:
+            back = session.get(models.users, user_id)
+        elif email is not None:
+            statement = select(models.users).where(models.users.email == email)
+            back = session.exec(statement).one_or_none()
         if back is None:
-            raise UserNotFound()
+            raise err.UserNotFound()
         return back

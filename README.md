@@ -5,4 +5,6 @@
 # 依赖
 ```bash
 pip install -r pyproject.toml
+# or
+uv pip sync
 ```

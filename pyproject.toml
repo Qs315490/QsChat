@@ -1,12 +1,15 @@
 [project]
 name = "QsChat"
-version = "0.0.0"
+version = "0.1.0"
 description = ""
 authors = [{ name = "Qs315490", email = "315490@qq.com" }]
 license.file = "LICENSE"
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = ["robyn", "sqlmodel"]
+dependencies = [
+    "robyn>=0.65.0",
+    "sqlmodel>=0.0.24",
+]
 
 [project.optional-dependencies]
 test = ["pytest"]
@@ -15,3 +18,13 @@ test = ["pytest"]
 addopts = "-vs --color=yes"
 testpaths = "tests"
 markers = ["user"]
+
+[[tool.uv.index]]
+url = "https://mirrors.cernet.edu.cn/pypi/web/simple"
+default = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.0",
+]

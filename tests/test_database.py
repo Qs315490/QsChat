@@ -1,44 +1,44 @@
 from pytest import raises, mark
-from database import *
-from utils.exception import *
+import database 
+import utils.exception as err
 
-drop_db_and_tables()
+database.drop_db_and_tables()
 
 @mark.user
 def test_add_user():
-    user = Users(id=1, username="test", password="1234")
-    add_user(user)
+    user = database.users(name="test", password="1234", email="test@test.com")
+    database.add_user(user)
     assert user.id is not None
     # 重复添加
-    with raises(UserAlreadyExists):
-        add_user(user)
+    with raises(err.UserAlreadyExists):
+        database.add_user(user)
     # 添加第二个用户
-    back = add_user(Users(username="test1", password="2234"))
+    back = database.add_user(database.users(name="test1", password="2234"))
     assert back.id == 2
 
 @mark.user
 def test_get_user():
-    back = get_user(1)
+    back = database.get_user(1)
     assert back.id == 1
     # 获取不存在的用户
-    with raises(UserNotFound):
-        back = get_user(999)
+    with raises(err.UserNotFound):
+        back = database.get_user(999)
 
 @mark.user
 def test_edit_user():
-    back = edit_user(UsersUpdate(id=1, username="test_user"))
+    back = database.edit_user(database.usersUpdate(id=1, name="test_user"))
     assert back.id == 1
-    assert back.username == "test_user"
+    assert back.name == "test_user"
     assert back.password == "1234"
     # 修改不存在的用户
-    with raises(UserNotFound):
-        back = edit_user(UsersUpdate(id=999, username="test_user1"))
+    with raises(err.UserNotFound):
+        back = database.edit_user(database.usersUpdate(id=999, name="test_user1"))
 
 @mark.user
 def test_del_user():
-    del_user(1)
-    with raises(UserNotFound):
-        get_user(1)
+    database.del_user(1)
+    with raises(err.UserNotFound):
+        database.get_user(1)
     # 删除不存在的用户
-    with raises(UserNotFound):
-        del_user(0)
+    with raises(err.UserNotFound):
+        database.del_user(0)
