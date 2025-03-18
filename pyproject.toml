@@ -14,7 +14,7 @@ dev = ["pytest>=8.3.5", "ruff>=0.11.0"]
 [tool.pytest.ini_options]
 addopts = "-vs --color=yes"
 testpaths = "tests"
-markers = ["user"]
+markers = ["user", "session"]
 
 [[tool.uv.index]]
 url = "https://mirrors.cernet.edu.cn/pypi/web/simple"
@@ -33,6 +33,7 @@ select = [ # 选择的规则
     "RUF",  # Ruff 社区自己实现的一些规则。
 ]
 ignore = [
-    "F403", # undefined-local-with-import-star
+    "F403",    # undefined-local-with-import-star
     "PLR2004", # pylint: magic-value-comparison
+    "N818",    # error-suffix-on-exception-name
 ]
