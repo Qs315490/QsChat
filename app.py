@@ -1,6 +1,7 @@
 from robyn import Robyn
-import routers
+
 import database as db  # noqa: F401
+import routers
 
 app = Robyn(__file__)
 
