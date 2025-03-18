@@ -1,5 +1,6 @@
-from pytest import raises, mark
-import database 
+from pytest import mark, raises
+
+import database
 import utils.exception as err
 
 database.drop_db_and_tables()

@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from sqlmodel import select
+
 from database import models
 from database.db import get_session
 from utils import exception as err

@@ -1,6 +1,7 @@
-from datetime import datetime
-from sqlmodel import SQLModel, Field, UniqueConstraint
+from datetime import datetime, timedelta
 from enum import IntEnum, IntFlag, auto
+
+from sqlmodel import Field, SQLModel, UniqueConstraint
 
 
 class UserStatus(IntEnum):
@@ -44,6 +45,20 @@ class UsersUpdate(SQLModel):
     "最后登录时间"
     deleted_at: datetime | None = None
     "删除时间"
+
+
+class Sessions(SQLModel, table=True):
+    "会话"
+
+    uuid: str = Field(primary_key=True)
+    user_id: int = Field(foreign_key="users.id")
+    "用户ID"
+    created_at: datetime = Field(default_factory=datetime.now)
+    "创建时间"
+    deleted_at: datetime = Field(
+        default_factory=lambda: datetime.now() + timedelta(days=7)
+    )
+    "过期时间, 默认7天后过期"
 
 
 class MessagesType(IntEnum):
@@ -109,6 +124,8 @@ class Groups(SQLModel, table=True):
 
 class GroupsMemBer(SQLModel, table=True):
     "会话成员"
+
+    __tablename__ = "groups_members"  # type: ignore
 
     session_id: int = Field(foreign_key="groups.id", primary_key=True)
     "会话ID"
