@@ -1,16 +1,17 @@
+from datetime import datetime
 from sqlmodel import select
 from database import models
 from database.db import get_session
 from utils import exception as err
 
 
-def add_user(user: models.users):
+def add_user(user: models.Users):
     if user.email is not None:
         try:
             _ = get_user(email=user.email)
             raise err.UserAlreadyExists()
         except err.UserNotFound:
-            ...
+            pass
 
     with get_session() as session:
         session.add(user)
@@ -20,13 +21,17 @@ def add_user(user: models.users):
 
 
 def del_user(user_id: int):
-    back = get_user(user_id)
+    user = get_user(user_id)
     with get_session() as session:
-        session.delete(back)
+        user.status = models.UserStatus.BANNED.value
+        user.deleted_at = datetime.now()
+        session.add(user)
         session.commit()
+        session.refresh(user)
+    return user
 
 
-def edit_user(user: models.usersUpdate):
+def edit_user(user: models.UsersUpdate):
     back = get_user(user.id)
     tmp = back.sqlmodel_update(user.model_dump(exclude_unset=True))
     with get_session() as session:
@@ -42,9 +47,9 @@ def get_user(user_id: int | None = None, email: str | None = None):
     with get_session() as session:
         back = None
         if user_id is not None:
-            back = session.get(models.users, user_id)
+            back = session.get(models.Users, user_id)
         elif email is not None:
-            statement = select(models.users).where(models.users.email == email)
+            statement = select(models.Users).where(models.Users.email == email)
             back = session.exec(statement).one_or_none()
         if back is None:
             raise err.UserNotFound()
