@@ -13,7 +13,7 @@ def test_add_session():
         user_id=1,
     )
     database.add_session(session)
-    assert session.deleted_at is not None
+    assert session.outdated_at is not None
 
 
 @mark.session

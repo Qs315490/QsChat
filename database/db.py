@@ -4,7 +4,7 @@ engine = create_engine(
     "sqlite:///database.sqlite3", connect_args={"check_same_thread": False}
 )
 
-def get_sessions():
+def get_db_sessions():
     return Session(engine)
 
 def create_db_and_tables():

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from enum import IntEnum, IntFlag, auto
+from uuid import uuid4
 
 from sqlmodel import Field, SQLModel, UniqueConstraint
 
@@ -50,12 +51,12 @@ class UsersUpdate(SQLModel):
 class Sessions(SQLModel, table=True):
     "会话"
 
-    uuid: str = Field(primary_key=True)
+    uuid: str = Field(primary_key=True, default_factory=lambda: str(uuid4()))
     user_id: int = Field(foreign_key="users.id")
     "用户ID"
     created_at: datetime = Field(default_factory=datetime.now)
     "创建时间"
-    deleted_at: datetime = Field(
+    outdated_at: datetime = Field(
         default_factory=lambda: datetime.now() + timedelta(days=7)
     )
     "过期时间, 默认7天后过期"
