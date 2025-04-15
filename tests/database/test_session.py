@@ -1,24 +1,24 @@
 from pytest import mark, raises
 
-import database
 import utils.exception as err
+from database import crud, db, models
 
-database.drop_db_and_tables()
+db.drop_db_and_tables()
 
 
 @mark.session
 def test_add_session():
-    session = database.Sessions(
+    session = models.Sessions(
         uuid="123",
         user_id=1,
     )
-    database.add_session(session)
+    crud.add_session(session)
     assert session.outdated_at is not None
 
 
 @mark.session
 def test_get_session():
-    session = database.get_session("123")
-    assert isinstance(session, database.Sessions)
+    session = crud.get_session("123")
+    assert isinstance(session, models.Sessions)
     with raises(err.SessionNotFound):
-        database.get_session("456")
+        crud.get_session("456")
