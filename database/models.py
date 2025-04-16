@@ -51,7 +51,7 @@ class UsersUpdate(SQLModel):
 class Sessions(SQLModel, table=True):
     "会话"
 
-    uuid: str = Field(primary_key=True, default_factory=lambda: str(uuid4()))
+    uuid: str = Field(primary_key=True, default_factory=uuid4)
     user_id: int = Field(foreign_key="users.id")
     "用户ID"
     created_at: datetime = Field(default_factory=datetime.now)

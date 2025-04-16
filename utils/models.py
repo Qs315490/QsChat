@@ -1,8 +1,14 @@
-from typing import Any
-
-from pydantic import BaseModel, Field
+from robyn import Response, jsonify
 
 
-class ApiResult(BaseModel):
-    message: str
-    data: Any
+def api_result(message: str = "", data: dict | str | None = None, code: int = 200):
+    return Response(
+        code,
+        {"Content-Type": "application/json"},
+        jsonify(
+            {
+                "message": message,
+                "data": data,
+            }
+        ),
+    )
